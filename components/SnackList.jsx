@@ -6,7 +6,7 @@ import { DoNotDisturbAltRounded, CheckCircleOutlineRounded } from '@mui/icons-ma
 export default function SnackList({ snacks, canReport, voteFunction }) {
 
   const [width, setWidth] = useState(350);
-  
+
   useEffect(() => {
     if (window) {
       setWidth(window.innerWidth)
@@ -14,6 +14,17 @@ export default function SnackList({ snacks, canReport, voteFunction }) {
   }, []);
 
   if (snacks) {
+
+    if (snacks.length === 0) {
+      return (
+        <>
+          <br />
+          <Typography variant="h5" style={{ textAlign: 'center' }}>No snacks...</Typography>
+          <br />
+        </>
+      )
+    }
+
     return (<>
       {snacks.map(snack => (
         <Card key={snack.item_id} style={{ borderRadius: "8px", margin: '15px 0px', padding: '15px' }}>

@@ -4,15 +4,18 @@ import RichHeader from '../components/RichHeader'
 import Alerts from '../components/Alerts'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Typography, Divider } from '@mui/material'
+import { Typography, Divider, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import SnackList from '../components/SnackList'
 
 export default function Home() {
   const currentPage = 'Home';
 
   const [alerts, setAlerts] = useState([]);
+  const [allSnacks, setAllSnacks] = useState(null);
   const [snacks, setSnacks] = useState(null);
   const [canReport, setCanReport] = useState(false);
+  const [snackTypes, setSnackTypes] = useState([]);
+  const [typeFilter, setTypeFilter] = useState(null);
 
   // Get all snacks from api
   useEffect(() => {
@@ -37,10 +40,14 @@ export default function Home() {
         ]);
 
         setSnacks([]);
+        setAllSnacks([]);
+        setSnackTypes([]);
       });
 
       if (snacksReq) {
         setSnacks(snacksReq.data.snacks);
+        setAllSnacks(snacksReq.data.snacks);
+        setSnackTypes(snacksReq.data.snack_types);
         setCanReport(snacksReq.data.can_report);
       }
 
@@ -81,6 +88,14 @@ export default function Home() {
     }
   }
 
+  const handleFilterChange = (e) => {
+    setTypeFilter(e.target.value);
+    if (e.target.value) {
+      setSnacks(allSnacks.filter(snack => snack.type_id === e.target.value));
+    } else {
+      setSnacks(allSnacks);
+    }
+  }
 
   return (
     <div>
@@ -94,6 +109,23 @@ export default function Home() {
         margin: '0 auto',
         padding: '15px'
       }}>
+        {/* Snack type dropdown */}
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Snack Type</InputLabel>
+          <Select
+            value={typeFilter}
+            label="Snack Type"
+            onChange={handleFilterChange}
+          >
+            <MenuItem value={null}>All Snacks</MenuItem>
+            {snackTypes.map(type => (
+              <MenuItem key={type.type_id} value={type.type_id}>{type.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <br />
+        <br />
+
         {/* Available snacks */}
         <Typography variant="overline" component="h1">Available</Typography>
         <Divider />

@@ -41,9 +41,17 @@ async function getSnacksByIds(item_ids) {
   )
 }
 
+// Get snack types
+async function getSnackTypes() {
+  return query(`SELECT * FROM item_types`).then(
+    res => res.rows
+  )
+}
+
 export {
   getSnacks,
   updateSnackAvailability,
   getSnackById,
-  getSnacksByIds
+  getSnacksByIds,
+  getSnackTypes
 }
